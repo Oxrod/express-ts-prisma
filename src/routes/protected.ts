@@ -4,6 +4,7 @@ import ordersRouter from "./orders";
 import productRouter from "./products";
 import userRouter from "./users";
 
+passport.authenticate("jwt", { session: false });
 const protectedRouter = express.Router();
 
 protectedRouter.use("/", passport.authenticate("jwt", { session: false }));
