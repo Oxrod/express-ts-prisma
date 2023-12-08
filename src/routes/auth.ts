@@ -48,6 +48,15 @@ authRouter.post(
       const { email, password } = req.body;
 
       try {
+        const userInDb = await prisma.user.findFirst({
+          where: {
+            email: email,
+          },
+        });
+
+        if (userInDb) {
+          return res.status(500).json({ error: "User already exists" });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
           data: {
@@ -60,7 +69,7 @@ authRouter.post(
           .status(200)
           .json({ message: "User successfully created !", user: user });
       } catch (error) {
-        return res.status(404).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }

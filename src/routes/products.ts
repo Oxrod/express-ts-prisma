@@ -15,8 +15,7 @@ productRouter.get("/", async function (req: Request, res: Response) {
 
     return res.status(200).json(products);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error });
+    return res.status(500).json({ error });
   }
 });
 
@@ -39,7 +38,7 @@ productRouter.get(
         return res.status(200).json(product);
       } catch (error) {
         console.log(error);
-        return res.status(404).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
@@ -65,7 +64,7 @@ productRouter.post(
           .json({ message: "Product successfully created !", product });
       } catch (error) {
         console.log(error);
-        return res.status(404).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
@@ -89,7 +88,7 @@ productRouter.patch(
         });
 
         if (!dbUser) {
-          throw new Error("Invalid id");
+          return res.status(500).json({ error: "Invalid id" });
         }
 
         const updatedProduct = await prisma.product.update({
@@ -104,7 +103,7 @@ productRouter.patch(
 
         return res.status(200).json(updatedProduct);
       } catch (error) {
-        return res.status(421).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
@@ -125,7 +124,7 @@ productRouter.delete(
         });
 
         if (!product) {
-          throw new Error("Invalid id");
+          return res.status(500).json({ error: "Invalid id" });
         }
 
         await prisma.product.delete({
@@ -138,7 +137,7 @@ productRouter.delete(
           .status(200)
           .json({ message: "Product successfully deleted", product });
       } catch (error) {
-        return res.status(421).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }

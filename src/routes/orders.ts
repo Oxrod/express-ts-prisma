@@ -46,8 +46,7 @@ ordersRouter.get(
 
         return res.status(200).json(order);
       } catch (error) {
-        console.log(error);
-        return res.status(404).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
@@ -76,7 +75,6 @@ ordersRouter.post(
           .status(200)
           .json({ message: "Order successfully created !", order });
       } catch (error) {
-        console.log(error);
         return res.status(500).json({ error });
       }
     });
@@ -137,7 +135,7 @@ ordersRouter.patch(
 
         return res.status(200).json(updatedOrder);
       } catch (error) {
-        return res.status(421).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
@@ -171,7 +169,7 @@ ordersRouter.delete(
           .status(200)
           .json({ message: "Order successfully deleted", order });
       } catch (error) {
-        return res.status(421).json({ error });
+        return res.status(500).json({ error });
       }
     });
   }
