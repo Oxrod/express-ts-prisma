@@ -11,6 +11,7 @@ userRouter.get("/", async function (req: Request, res: Response) {
   try {
     const users = await prisma.user.findMany({
       select: {
+        id: true,
         email: true,
       },
     });
@@ -31,6 +32,10 @@ userRouter.get(
         const user = await prisma.user.findUnique({
           where: {
             id: parseInt(req.params.id),
+          },
+          select: {
+            id: true,
+            email: true,
           },
         });
 
@@ -59,7 +64,9 @@ userRouter.post(
           },
         });
 
-        return res.status(200).json({ message: "User successfully created !" });
+        return res
+          .status(200)
+          .json({ message: "User successfully created !", user: user });
       } catch (error) {
         return res.status(404).json({ error });
       }
@@ -91,6 +98,10 @@ userRouter.patch(
           where: {
             id: dbUser.id,
           },
+          select: {
+            id: true,
+            email: true,
+          },
           data: userToUpdate,
         });
 
@@ -114,6 +125,10 @@ userRouter.delete(
           where: {
             id: parseInt(id),
           },
+          select: {
+            id: true,
+            email: true,
+          },
         });
 
         if (!user) {
@@ -126,7 +141,9 @@ userRouter.delete(
           },
         });
 
-        return res.status(200).json({ message: "User successfully deleted" });
+        return res
+          .status(200)
+          .json({ message: "User successfully deleted", user: user });
       } catch (error) {
         return res.status(421).json({ error });
       }

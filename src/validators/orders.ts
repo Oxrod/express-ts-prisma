@@ -8,13 +8,15 @@ export const OrderCreateValidator = [
     .notEmpty()
     .withMessage("orderItems must not be empty"),
   check("orderItems.*.productId")
-    .trim()
-    .isNumeric()
+    .not()
+    .isString()
+    .isInt()
     .bail()
     .withMessage("Incorrect productId"),
   check("orderItems.*.quantity")
-    .trim()
-    .isNumeric()
+    .not()
+    .isString()
+    .isInt()
     .bail()
     .withMessage("Incorrect quantity"),
 ];

@@ -32,6 +32,10 @@ productRouter.get(
           },
         });
 
+        if (!product) {
+          return res.status(404).json({ error: "Can't find resource" });
+        }
+
         return res.status(200).json(product);
       } catch (error) {
         console.log(error);

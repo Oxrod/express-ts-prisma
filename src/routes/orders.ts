@@ -58,7 +58,7 @@ ordersRouter.post(
   OrderCreateValidator,
   async function (req: Request, res: Response) {
     return useValidator(req, res, async () => {
-      const { orderItems } = req.body;
+      const orderItems = req.body.orderItems;
 
       const jwtUser = req.user as User;
 
@@ -76,7 +76,8 @@ ordersRouter.post(
           .status(200)
           .json({ message: "Order successfully created !", order });
       } catch (error) {
-        return res.status(404).json({ error });
+        console.log(error);
+        return res.status(500).json({ error });
       }
     });
   }
@@ -103,11 +104,17 @@ ordersRouter.patch(
           throw new Error("Invalid id");
         }
 
-        await prisma.orderItem.deleteMany({
+        const deletedItems = await prisma.orderItem.deleteMany({
           where: {
             orderId: parseInt(id),
           },
         });
+
+        if (!deletedItems) {
+          return res
+            .status(500)
+            .json({ error: "Error while trying to delete items" });
+        }
         const updatedOrder = await prisma.order.update({
           where: {
             id: dbUser.id,
@@ -121,6 +128,12 @@ ordersRouter.patch(
             orderItems: true,
           },
         });
+
+        if (!updatedOrder) {
+          return res
+            .status(500)
+            .json({ error: "Error while trying to update order" });
+        }
 
         return res.status(200).json(updatedOrder);
       } catch (error) {

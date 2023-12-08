@@ -4,22 +4,39 @@ import helmet from "helmet";
 import passport from "passport";
 import limiter from "./middlewares/ratel-imit";
 import authRouter from "./routes/auth";
-import protectedRouter from "./routes/protected";
+import ordersRouter from "./routes/orders";
+import productRouter from "./routes/products";
+import userRouter from "./routes/users";
 import prisma from "./utils/db";
 import "./utils/passport";
 
 async function main() {
   const app = express();
-
-  app.set("trust proxy", 1);
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
   app.use(passport.initialize());
-  app.use(limiter);
+
   app.use(helmet());
+  app.use(limiter);
+  // app.set("trust proxy", 1);
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   app.use("/auth", authRouter);
-  app.use("/", protectedRouter);
+
+  app.use(
+    "/orders",
+    passport.authenticate("jwt", { session: false }),
+    ordersRouter
+  );
+  app.use(
+    "/products",
+    passport.authenticate("jwt", { session: false }),
+    productRouter
+  );
+  app.use(
+    "/users",
+    passport.authenticate("jwt", { session: false }),
+    userRouter
+  );
 
   app.listen(process.env.APP_PORT, () =>
     console.log(
